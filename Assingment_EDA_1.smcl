@@ -1,0 +1,93 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\enriq\Dropbox\University of Nottingham\Module programs\Economic Data Analysis\2020\Assignmnent1\Code\Assingment_EDA_1.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 Dec 2020, 18:03:08
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\enriq\AppData\Local\Temp\STD37ac_000000.tmp"
+{txt}
+{com}. use econ4028_tseries.dta, replace //open database
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\enriq\AppData\Local\Temp\STD37ac_000000.tmp"
+{txt}
+{com}. 
+. format yw %tw
+{txt}
+{com}. tset yw
+{res}{txt}{col 9}time variable:  {res}{col 25}yw, 2007w1 to 2016w47
+{txt}{col 17}delta:  {res}1 week
+{txt}
+{com}. 
+. cap drop temp1 
+{txt}
+{com}. cap drop temp2
+{txt}
+{com}. cap drop temp3 
+{txt}
+{com}. cap drop temp5
+{txt}
+{com}. 
+. cap drop f1_rc 
+{txt}
+{com}. cap drop f2_rc
+{txt}
+{com}. cap drop f3_rc 
+{txt}
+{com}. cap drop f5_rc
+{txt}
+{com}. 
+. gen f1_rc =.    
+{txt}(515 missing values generated)
+
+{com}. gen f2_rc =.
+{txt}(515 missing values generated)
+
+{com}. gen f3_rc =.    
+{txt}(515 missing values generated)
+
+{com}. gen f5_rc =.
+{txt}(515 missing values generated)
+
+{com}. 
+. forval i=1/216 {c -(}
+{txt}  2{com}. local end  = 400 + `i' - 1  
+{txt}  3{com}. local h = `end' + 1 
+{txt}  4{com}. 
+.  ***  Modelo 1
+. quietly arima R_FT100 DY_FT100 if t>=1 & t<=`end', ar(1) ma(1) nolog 
+{txt}  5{com}. quietly predict temp1, xb 
+{txt}  6{com}. quietly replace f1_rc  =  temp1 if t==`h'
+{txt}  7{com}. 
+.  *** Modelo 2
+. quietly arima R_FT100 DY_FT100 if t>=1 & t<=`end', ar(1) nolog 
+{txt}  8{com}. quietly predict temp2
+{txt}  9{com}. quietly replace f2_rc  =  temp2 if t==`h'
+{txt} 10{com}. 
+.  *** Modelo 3
+. quietly arima R_FT100 DY_FT100 if t>=1 & t<=`end', ma(1) nolog 
+{txt} 11{com}. quietly predict temp3
+{txt} 12{com}. quietly replace f3_rc  =  temp3 if t==`h'
+{txt} 13{com}. 
+.  *** Modelo 5
+. quietly arima R_FT100 L.DY_FT100 if t>=1 & t<=`end', ar(1) ma(1) nolog 
+{txt} 14{com}. quietly predict temp5
+{txt} 15{com}. quietly replace f5_rc  =  temp5 if t==`h'
+{txt} 16{com}. 
+. drop temp1 temp2 temp3 temp5
+{txt} 17{com}. {c )-}
+{err}{hline 2}Break{hline 2}
+{txt}{search r(1), local:r(1);}
+
+end of do-file
+
+{err}{hline 2}Break{hline 2}
+{txt}{search r(1), local:r(1);}
+
+{com}. exit, clear
